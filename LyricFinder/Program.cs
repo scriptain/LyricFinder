@@ -4,10 +4,10 @@
     {
         static void Main(string[] args)
         {
-            while (true) 
+            while (true)
             {
                 Console.WriteLine("Enter a lyric to search:");
-                var input = Console.ReadLine(); 
+                var input = Console.ReadLine();
                 string[] matches = Search(input);
                 Console.WriteLine(matches.Length);
             }
@@ -31,34 +31,49 @@
                     // wrapping in try catch block so as to 'gracefully' handle various errors such as filenotfound, access denied, disk errors
                     try
                     {
-                        // store the lyrics in "content"
-                        string content = File.ReadAllText(file);
-                        // perform a case insensitive search for searchTerm
-                        if(content.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-                        {
-                            // Match found, add it to matches array 
-                            matches.Append(file).ToArray();
-                            Console.WriteLine(file);
-                        }
-                    } catch (Exception ex)
-                    {
-                    Console.WriteLine(ex.Message); 
-                    }
+                        // Read all lines in the current file
+                        string[] lines = File.ReadAllLines(file);
 
+                        // go through the song line by line
+                        for (int i = 0; i < lines.Length; i++)
+                        {
+                            // check if this line is a match
+                            if (lines[i].Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                            {
+                                Console.WriteLine($"Found a match at line: {i}");
+                                Console.WriteLine(lines[i]);
+                                Console.WriteLine(file);
+                                Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.ToString());
+                    }
                 }
             }
             else
             {
                 Console.Write("Directory Doesn't Exist");
             }
-            foreach(string match in matches) 
-             {
-                Console.WriteLine(match);
-             }
             return matches;
+
+
+
         }
 
-
-
+        public struct Match
+        {
+            // {get; set;} are 'accessors' for the property. They define how the property can be accessed and modified
+            // get: returns the value of the property. Match.artist is called
+            // set: assigns a value to the property. Match.artist = "Bono" uses set implicitly
+            public string artist { get; set; }
+            public string album { get; set; }
+            public string songTitle { get; set; }
+            public int line { get; set; }
+        }
     }
 }
